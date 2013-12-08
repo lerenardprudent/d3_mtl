@@ -1,6 +1,6 @@
 function init()
 {
-    var title = "D3 YAY!";
+    var title = "Vous êtes où sur cette belle île ?";
     document.title = title;
     $('#heading').html(title);
     drawMap(.9);
@@ -19,8 +19,8 @@ function drawMap(mapScaleWithinDiv)
         .attr("width", width)
         .attr("height", height);
 
-    d3.json("arronds_topo.json", function(error, mtl) {
-        var arronds = topojson.feature(mtl, mtl.objects.arronds);
+    d3.json("geodata/arronds_topo2.json", function(error, mtl) {
+        var arronds = topojson.feature(mtl, mtl.objects.arronds2);
         
         projection
           .scale(1)
@@ -57,7 +57,8 @@ function drawMap(mapScaleWithinDiv)
             .attr("stroke-width", 1)
             .attr("fill", "white");*/
             
-        svg.selectAll("path")
+        svg
+            .selectAll("path")
             .data(arronds.features)
             .enter().append("path")
             .attr("d", d3.geo.path())
@@ -66,15 +67,15 @@ function drawMap(mapScaleWithinDiv)
             .attr("stroke", "grey")
             .attr("stroke-width", 1)
             .attr("fill", "white")
+            .attr("title", function(d,i) { console.info(d); return d.properties.nom; })
             .on("mouseover", function(d,i) {
-                d3.select(this).style({'fill':'green'});
+                d3.select(this).style({'fill':d.properties.arrond_mtl == 'T'? 'green' : 'red'});
              })
             .on("mouseout", function(d,i) {
                 d3.select(this).style({'fill':'white'});
              })
           
         if (navigator.geolocation) {
-            console.info("Plotting location...");
             navigator.geolocation.getCurrentPosition(
                function(pos) {
                 var myPosLL = { lat: pos.coords.latitude, lng:pos.coords.longitude };
