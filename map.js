@@ -10,9 +10,7 @@ function drawMap(mapScaleWithinDiv)
 {
     var width = $("#mapdiv").width(), height = $("#mapdiv").height();
 
-    var projection = d3.geo.mercator()
-        //.scale(10);
-        //.translate([width / 2, height / 2]);
+    var projection = d3.geo.mercator();
 
     var path = d3.geo.path()
         .projection(projection);
@@ -22,8 +20,7 @@ function drawMap(mapScaleWithinDiv)
         .attr("height", height);
 
     d3.json("arronds_topo.json", function(error, mtl) {
-        var arronds = topojson.feature(mtl, mtl.objects.arronds),
-          arrond = arronds.features.filter(function(d) { return d.id === 'Hampstead'; })[0];
+        var arronds = topojson.feature(mtl, mtl.objects.arronds);
         
         projection
           .scale(1)
@@ -52,13 +49,29 @@ function drawMap(mapScaleWithinDiv)
             .scale(maxScale)
             .translate(translation);
 
-        svg.append("path")
+        /*svg.append("path")
             .datum(arronds)
             .attr("class", "feature")
             .attr("d", path)
             .attr("stroke", "grey")
             .attr("stroke-width", 1)
-            .attr("fill", "white");
+            .attr("fill", "white");*/
+            
+        svg.selectAll("path")
+            .data(arronds.features)
+            .enter().append("path")
+            .attr("d", d3.geo.path())
+            .attr("class", "feature")
+            .attr("d", path)
+            .attr("stroke", "grey")
+            .attr("stroke-width", 1)
+            .attr("fill", "white")
+            .on("mouseover", function(d,i) {
+                d3.select(this).style({'fill':'green'});
+             })
+            .on("mouseout", function(d,i) {
+                d3.select(this).style({'fill':'white'});
+             })
           
         if (navigator.geolocation) {
             console.info("Plotting location...");
@@ -67,6 +80,7 @@ function drawMap(mapScaleWithinDiv)
                 var myPosLL = { lat: pos.coords.latitude, lng:pos.coords.longitude };
                 svg.append("circle")
                     .attr("r",2)
+                    .attr("title","Vous êtes ici !")
                     .attr("stroke", "green")
                     .attr("transform", function(d) {return "translate(" + projection([myPosLL.lng,myPosLL.lat]) + ")"})
                     .transition()
@@ -94,4 +108,9 @@ function animateAgainFirstStep()
         .duration(700)
         .attr("r", 4)
         .each("end", animateSecondStep);
+}
+
+function click(d,i)
+{
+    console.info(d,i);
 }
