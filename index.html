@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <script type="text/javascript" src="jquery-1.10.2.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <script src="topojson.v1.min.js"></script>
+    <script src="map.js"></script>
+    <title id="title"></title>
+    <style>
+        .d3map { margin-left:auto; margin-right:auto; height:550px; width:750px; border-style:solid; border-color: orange; border-width:2px; background-color:lightblue; }
+    </style>
+</head>
+<body onload="init();">
+    <h1 id="heading"></h1>
+    <div id="mapdiv" class="d3map"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="map"></svg></div>
+</body>
+</html>
